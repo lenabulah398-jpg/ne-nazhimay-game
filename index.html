@@ -1,127 +1,240 @@
-<!doctype html>
-<html lang="ru">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>НЕ НАЖИМАЙ 😈</title>
-
-<style>
-*{box-sizing:border-box}
-
-body{
-margin:0;
-font-family:system-ui,-apple-system,sans-serif;
-background:#111;
-color:#fff;
-min-height:100vh
+message.textContent=
+"💀 Игра окончена: "+score+
+" очков";
 }
 
-main{
-max-width:520px;
-margin:auto;
-padding:22px 16px
+save();
+
+setTimeout(()=>{
+showScreen("menu");
+},1800);
 }
 
-.card{
-background:#1b1b1f;
-border:1px solid #333;
-border-radius:26px;
-padding:22px;
-text-align:center
+target.addEventListener(
+"click",
+hitTarget
+);
+
+
+/* =========================
+БАРАБАН
+========================= */
+
+let wheelRotation=0;
+let spinning=false;
+
+const prizes=[
+{text:"+10 🪙",coins:10},
+{text:"+25 🪙",coins:25},
+{text:"+50 🪙",coins:50},
+{text:"+1 ❤️",life:1},
+{text:"×2 ⚡",multiplier:2},
+{text:"+100 🪙",coins:100},
+{text:"🎁 +75 🪙",coins:75},
+{text:"💨 Ничего",coins:0}
+];
+
+function spinWheel(){
+
+if(spinning)return;
+
+if(data.coins<30){
+
+document.getElementById(
+"spinResult"
+).textContent=
+"❌ Нужно 30 🪙";
+
+return;
 }
 
-.stats{
-color:#aaa;
-font-size:14px
+data.coins-=30;
+
+spinning=true;
+
+const index=random(
+0,
+prizes.length-1
+);
+
+const segment=360/prizes.length;
+
+const extra=
+360*5+
+(360-index*segment);
+
+wheelRotation+=extra;
+
+document.getElementById(
+"wheel"
+).style.transform=
+"rotate("+wheelRotation+"deg)";
+
+document.getElementById(
+"spinButton"
+).disabled=true;
+
+setTimeout(()=>{
+
+const prize=prizes[index];
+
+if(prize.coins){
+
+data.coins+=prize.coins;
 }
 
-.title{
-font-size:30px;
-font-weight:900;
-margin:12px 0 4px
+if(prize.life){
+
+lives=Math.min(lives+1,5);
 }
 
-.msg{
-color:#aaa;
-min-height:44px
+if(prize.multiplier){
+
+data.multiplier=2;
 }
 
-button{
-font:inherit;
-color:#fff;
-cursor:pointer
+document.getElementById(
+"spinResult"
+).textContent=
+"🎉 "+prize.text;
+
+spinning=false;
+
+document.getElementById(
+"spinButton"
+).disabled=false;
+
+save();
+
+},4100);
 }
 
-.mainbtn{
-width:100%;
-min-height:150px;
-border:0;
-border-radius:28px;
-background:#ff3b70;
-font-size:27px;
-font-weight:900;
-margin:24px 0 16px
+
+/* =========================
+МАГАЗИН
+========================= */
+
+function buyLife(){
+
+if(data.coins<100){
+
+alert("Недостаточно монет 🪙");
+
+return;
 }
 
-.actions{
-display:flex;
-gap:10px;
-justify-content:center;
-flex-wrap:wrap
+data.coins-=100;
+
+lives=Math.min(lives+1,5);
+
+save();
+
+alert("❤️ +1 жизнь!");
 }
 
-.small{
-background:#222;
-border:1px solid #444;
-border-radius:14px;
-padding:12px 16px
+function buyMultiplier(){
+
+if(data.coins<150){
+
+alert("Недостаточно монет 🪙");
+
+return;
 }
 
-.result{
-margin-top:18px;
-padding:16px;
-border-radius:18px;
-background:#25252b;
-line-height:1.5
+data.coins-=150;
+
+data.multiplier=2;
+
+save();
+
+alert("⚡ Очки теперь ×2!");
 }
 
-.shake{
-animation:shake .25s
+function buyCoins(){
+
+if(data.coins<200){
+
+alert("Недостаточно монет 🪙");
+
+return;
 }
 
-@keyframes shake{
-25%{transform:translateX(-7px)}
-75%{transform:translateX(7px)}
+data.coins-=200;
+data.coins+=100;
+
+save();
+
+alert("😅 Это был плохой обмен...");
 }
 
-.hint{
-margin-top:16px;
-color:#777;
-font-size:12px
+
+/* =========================
+ЕЖЕДНЕВНЫЙ БОНУС
+========================= */
+
+function today(){
+
+const d=new Date();
+
+return d.getFullYear()+"-"+
+(d.getMonth()+1)+"-"+
+d.getDate();
 }
-</style>
-</head>
 
-<body>
+function claimDaily(){
 
-<main>
-<section class="card">
+if(data.lastDaily===today()){
 
-<div class="stats">
-УРОВЕНЬ <b id="level">1</b> · ОЧКИ <b id="score">0</b>
-</div>
+alert(
+"Ты уже забрал сегодняшний бонус 🎁"
+);
 
-<div class="title" id="title">НЕ НАЖИМАЙ</div>
+return;
+}
 
-<div class="msg" id="message">
-Серьёзно. Не нажимай эту кнопку.
-</div>
+data.lastDaily=today();
 
-<button class="mainbtn" id="play">
-НЕ НАЖИМАТЬ
-</button>
+data.coins+=100;
 
-<div class="actions">
+save();
 
-<button class="small" id="challenge">
-😈
+document.getElementById(
+"dailyButton"
+).textContent=
+"✅ БОНУС ПОЛУЧЕН";
+
+alert(
+"🎁 +100 монет!"
+);
+}
+
+
+/* =========================
+ЗАДАНИЯ
+========================= */
+
+function showTasks(){
+
+alert(
+"🎯 ЗАДАНИЯ\n\n"+
+"Игры сыграны: "+
+data.tasks.games+
+"\n\n"+
+"Очков заработано: "+
+data.tasks.points+
+"\n\n"+
+"Награды будут добавляться!"
+);
+}
+
+
+/* =========================
+ЗАПУСК
+========================= */
+
+updateStats();
+
+</script>
+
+</body>
+</html>
