@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>НЕ НАЖИМАЙ 😈</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+margin:0;
+font-family:system-ui,-apple-system,sans-serif;
+background:#111;
+color:#fff;
+min-height:100vh
+}
+
+main{
+max-width:520px;
+margin:auto;
+padding:22px 16px
+}
+
+.card{
+background:#1b1b1f;
+border:1px solid #333;
+border-radius:26px;
+padding:22px;
+text-align:center
+}
+
+.stats{
+color:#aaa;
+font-size:14px
+}
+
+.title{
+font-size:30px;
+font-weight:900;
+margin:12px 0 4px
+}
+
+.msg{
+color:#aaa;
+min-height:44px
+}
+
+button{
+font:inherit;
+color:#fff;
+cursor:pointer
+}
+
+.mainbtn{
+width:100%;
+min-height:150px;
+border:0;
+border-radius:28px;
+background:#ff3b70;
+font-size:27px;
+font-weight:900;
+margin:24px 0 16px
+}
+
+.actions{
+display:flex;
+gap:10px;
+justify-content:center;
+flex-wrap:wrap
+}
+
+.small{
+background:#222;
+border:1px solid #444;
+border-radius:14px;
+padding:12px 16px
+}
+
+.result{
+margin-top:18px;
+padding:16px;
+border-radius:18px;
+background:#25252b;
+line-height:1.5
+}
+
+.shake{
+animation:shake .25s
+}
+
+@keyframes shake{
+25%{transform:translateX(-7px)}
+75%{transform:translateX(7px)}
+}
+
+.hint{
+margin-top:16px;
+color:#777;
+font-size:12px
+}
+</style>
+</head>
+
+<body>
+
+<main>
+<section class="card">
+
+<div class="stats">
+УРОВЕНЬ <b id="level">1</b> · ОЧКИ <b id="score">0</b>
+</div>
+
+<div class="title" id="title">НЕ НАЖИМАЙ</div>
+
+<div class="msg" id="message">
+Серьёзно. Не нажимай эту кнопку.
+</div>
+
+<button class="mainbtn" id="play">
+НЕ НАЖИМАТЬ
+</button>
+
+<div class="actions">
+
+<button class="small" id="challenge">
+😈
